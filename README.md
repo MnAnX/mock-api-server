@@ -1,4 +1,4 @@
-# Mock_API_Server
+# Mock API Server
 
 A service that let you set mock response to an API url.
 
