@@ -10,8 +10,11 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.*;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.URL;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -71,8 +74,12 @@ public class Router {
                 } else {
                     // add mock api
                     addApi(req.getPath(), req.getMockResponse());
-                    // construct mock url. TODO: generate short url
-                    String url = "http://" + InetAddress.getLocalHost().getHostAddress() + ":8080/" + req.getPath();
+                    // construct mock url (with public ip address)
+                    URL whatismyip = new URL("http://checkip.amazonaws.com");
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                            whatismyip.openStream()));
+                    String ip = in.readLine();
+                    String url = "http://" + ip + ":8080/" + req.getPath();
                     log.info("Mock path ["+ req.getPath() +"] has been added, generated url: " + url);
 
                     ret.setUrl(url);
